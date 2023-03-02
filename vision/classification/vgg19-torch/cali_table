@@ -1,0 +1,32 @@
+# genetated time: 2023-03-02 14:57:55.925720
+# histogram number: 2048
+# sample number: 100
+# tune number: 5
+###
+# op_name    threshold    min    max
+input 1.0000080 0.0000000 1.0000080
+/features/1/Relu_output_0_Relu 3.7873046 0.0000000 4.5731382
+/features/3/Relu_output_0_Relu 9.8046352 0.0000000 15.7641191
+/features/4/MaxPool_output_0_MaxPool 10.4480607 0.0000000 15.7641191
+/features/6/Relu_output_0_Relu 8.9640306 0.0000000 17.0668011
+/features/8/Relu_output_0_Relu 19.1123551 0.0000000 38.2135086
+/features/9/MaxPool_output_0_MaxPool 21.5056000 0.0000000 38.2135086
+/features/11/Relu_output_0_Relu 22.9918671 0.0000000 61.2817078
+/features/13/Relu_output_0_Relu 28.2149191 0.0000000 49.0517120
+/features/15/Relu_output_0_Relu 35.1551285 0.0000000 56.2207375
+/features/17/Relu_output_0_Relu 48.1722412 0.0000000 77.0379486
+/features/18/MaxPool_output_0_MaxPool 52.9894638 0.0000000 77.0379486
+/features/20/Relu_output_0_Relu 45.0625702 0.0000000 77.0779877
+/features/22/Relu_output_0_Relu 42.1417732 0.0000000 84.2423935
+/features/24/Relu_output_0_Relu 31.7680531 0.0000000 63.5050812
+/features/26/Relu_output_0_Relu 28.1044350 0.0000000 49.9390450
+/features/27/MaxPool_output_0_MaxPool 28.1044350 0.0000000 49.9390450
+/features/29/Relu_output_0_Relu 28.9135536 0.0000000 44.4673500
+/features/31/Relu_output_0_Relu 22.1326128 0.0000000 34.3652725
+/features/33/Relu_output_0_Relu 20.7749653 0.0000000 30.2033768
+/features/35/Relu_output_0_Relu 16.5189953 0.0000000 22.0145741
+/features/36/MaxPool_output_0_MaxPool 16.5189953 0.0000000 22.0145741
+/Flatten_output_0_Flatten 17.0685532 0.0000000 22.0145741
+/classifier/1/Relu_output_0_Relu 8.7118893 0.0000000 8.7118893
+/classifier/4/Relu_output_0_Relu 9.1362228 0.0000000 9.1362228
+output_Gemm 20.6918850 -10.4933252 20.6918850
