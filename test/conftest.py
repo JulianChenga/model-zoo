@@ -29,6 +29,10 @@ class FTPClient:
             self.user, self.passwd = None, None
         self.host = prog.sub('', url)
 
+        self.release_type = 'daily_build'
+        if os.environ.get('GITHUB_REF', '').endswith('stable'):
+            self.release_type = 'release_build'
+
         self.session = FTP(self.host, user=self.user, passwd=self.passwd)
 
     def download_and_untar(self, fn):
@@ -42,10 +46,22 @@ class FTPClient:
         tar.extractall()
 
     def get_nntc(self):
-        path = '/sophon-sdk/tpu-nntc/daily_build/latest_release'
+        path = f'/sophon-sdk/tpu-nntc/{self.release_type}/latest_release'
         self.session.cwd(path)
         fn = next(filter(lambda x: x.startswith('tpu-nntc_'), self.session.nlst()))
         logging.info(f'Latest nntc package is {fn}')
+        out_dir = fn.replace('.tar.gz', '')
+        if os.path.exists(out_dir):
+            logging.info(f'{out_dir} already exists')
+            return fn
+        self.download_and_untar(os.path.join(path, fn))
+        return fn
+
+    def get_mlir(self):
+        path = f'/sophon-sdk/tpu-mlir/{self.release_type}/latest_release'
+        self.session.cwd(path)
+        fn = next(filter(lambda x: x.startswith('tpu-mlir_'), self.session.nlst()))
+        logging.info(f'Latest mlir package is {fn}')
         out_dir = fn.replace('.tar.gz', '')
         if os.path.exists(out_dir):
             logging.info(f'{out_dir} already exists')
@@ -122,10 +138,11 @@ def latest_tpu_perf_whl():
     return f'https://github.com/{tpu_perf_whl}'
 
 import shutil
+import glob
 def remove_tree(path):
-    if os.path.exists(path):
-        logging.info(f'Removing {path}')
-        shutil.rmtree(path)
+    for match in glob.glob(path):
+        logging.info(f'Removing {match}')
+        shutil.rmtree(match)
 
 @pytest.fixture(scope='session')
 def nntc_docker(latest_tpu_perf_whl):
@@ -135,7 +152,7 @@ def nntc_docker(latest_tpu_perf_whl):
     root = os.path.dirname(os.path.dirname(__file__))
     logging.info(f'Working dir {root}')
     os.chdir(root)
-    remove_tree('./build')
+    remove_tree('out*')
 
     # Download
     ftp_server = os.environ.get('FTP_SERVER')
@@ -146,8 +163,14 @@ def nntc_docker(latest_tpu_perf_whl):
 
     # Docker init
     client = docker.from_env()
-    image = 'sophgo/tpuc_dev:latest'
+    image = 'sophgo/tpuc_dev:v2.1'
     pull_image(client, image)
+
+    # Glob kernel module
+    import glob
+    kernel_module = glob.glob(os.path.join(nntc_dir, 'lib/*kernel_module*'))
+    assert kernel_module
+    kernel_module = kernel_module[0]
 
     # NNTC container
     nntc_container = client.containers.run(
@@ -156,11 +179,17 @@ def nntc_docker(latest_tpu_perf_whl):
         restart_policy={'Name': 'always'},
         environment=[
             f'PATH=/workspace/{nntc_dir}/bin:/usr/local/bin:/usr/bin:/bin',
+            f'BMCOMPILER_KERNEL_MODULE_PATH=/workspace/{kernel_module}',
             f'NNTC_TOP=/workspace/{nntc_dir}'],
         tty=True, detach=True)
+
+    if 'GITHUB_ENV' in os.environ:
+        with open(os.environ['GITHUB_ENV'], 'a') as f:
+            f.write(f'NNTC_CONTAINER={nntc_container.name}\n')
+
     logging.info(f'Setting up NNTC')
     ret, _ = nntc_container.exec_run(
-        'bash -c "source /workspace/tpu-nntc*/scripts/envsetup.sh"',
+        f'bash -c "source /workspace/{nntc_dir}/scripts/envsetup.sh"',
         tty=True)
     assert ret == 0
 
@@ -172,9 +201,63 @@ def nntc_docker(latest_tpu_perf_whl):
     logging.info(f'Removing NNTC container {nntc_container.name}')
     nntc_container.remove(v=True, force=True)
 
-    remove_tree('./build')
-    remove_tree('./data')
-    remove_tree(nntc_dir)
+    remove_tree('out*')
+    remove_tree('data')
+    remove_tree('tpu-nntc*')
+
+@pytest.fixture(scope='session')
+def mlir_docker(latest_tpu_perf_whl):
+    # Env assertion
+    assert os.path.exists('/run/docker.sock')
+
+    root = os.path.dirname(os.path.dirname(__file__))
+    logging.info(f'Working dir {root}')
+    os.chdir(root)
+    remove_tree('mlir_out*')
+
+    # Download
+    ftp_server = os.environ.get('FTP_SERVER')
+    assert ftp_server
+    f = FTPClient(ftp_server)
+    mlir_fn = f.get_mlir()
+    mlir_dir = mlir_fn.replace('.tar.gz', '')
+    logging.info(f'mlir_dir: {mlir_dir}')
+    # Docker init
+    client = docker.from_env()
+    image = 'sophgo/tpuc_dev:latest'
+    pull_image(client, image)
+
+    # MLIR container
+    logging.info(f'Setting up MLIR')
+    mlir_container = client.containers.run(
+        image, 'bash',
+        volumes=[f'{root}:/workspace'],
+        restart_policy={'Name': 'always'},
+        environment=[
+            f'PATH=/workspace/{mlir_dir}/bin:' \
+            f'/workspace/{mlir_dir}/python/tools:' \
+            f'/workspace/{mlir_dir}/python/utils:' \
+            f'/workspace/{mlir_dir}/python/test:' \
+            f'/workspace/{mlir_dir}/python/samples:' \
+            f'/usr/local/bin:/usr/bin:/bin',
+            f'LD_LIBRARY_PATH=/workspace/{mlir_dir}/lib',
+            f'PYTHONPATH=/workspace/{mlir_dir}/python'],
+        tty=True, detach=True)
+
+    if 'GITHUB_ENV' in os.environ:
+        with open(os.environ['GITHUB_ENV'], 'a') as f:
+            f.write(f'MLIR_CONTAINER={mlir_container.name}\n')
+
+    logging.info(f'MLIR container {mlir_container.name}')
+
+    yield dict(docker=client, mlir_container=mlir_container)
+
+    # Docker cleanup
+    logging.info(f'Removing MLIR container {mlir_container.name}')
+    mlir_container.remove(v=True, force=True)
+
+    remove_tree('mlir_out*')
+    remove_tree('tpu-mlir*')
 
 import subprocess
 
@@ -227,7 +310,7 @@ def get_relevant_commits():
 
 def git_changed_files(rev):
     p = subprocess.run(
-        f'git show --pretty="" --name-only {rev}',
+        f'git show --pretty="" --diff-filter=ACMRTUXB --name-only {rev}',
         shell=True, check=True,
         capture_output=True)
     return p.stdout.decode().strip(' \n').split()
@@ -235,6 +318,9 @@ def git_changed_files(rev):
 from functools import reduce
 @pytest.fixture(scope='session')
 def case_list():
+    if 'TEST_CASES' in os.environ:
+        return os.environ['TEST_CASES'].strip() or '--full'
+
     if os.environ.get('FULL_TEST'):
         return '--full'
 
@@ -265,12 +351,6 @@ def case_list():
 
 @pytest.fixture(scope='session')
 def nntc_env(nntc_docker, latest_tpu_perf_whl, case_list):
-    logging.info(f'Installing tpu_perf {latest_tpu_perf_whl}')
-
-    subprocess.run(
-        f'pip3 install {latest_tpu_perf_whl}',
-        shell=True, check=True)
-
     ret, _ = nntc_docker['nntc_container'].exec_run(
         f'bash -c "pip3 install {latest_tpu_perf_whl}"',
         tty=True)
@@ -279,6 +359,18 @@ def nntc_env(nntc_docker, latest_tpu_perf_whl, case_list):
     logging.info(f'Running cases "{case_list}"')
 
     yield dict(**nntc_docker, case_list=case_list)
+
+@pytest.fixture(scope='session')
+def mlir_env(mlir_docker, latest_tpu_perf_whl, case_list):
+    ret, _ = mlir_docker['mlir_container'].exec_run(
+        f'bash -c "pip3 install {latest_tpu_perf_whl}"',
+        tty=True)
+    assert ret == 0
+
+    logging.info(f'Running cases "{case_list}"')
+
+    yield dict(**mlir_docker, case_list=case_list)
+
 
 def execute_cmd(cmd):
     ret = os.system(cmd)
@@ -321,7 +413,7 @@ def get_coco2017_val():
     fn = 'val2017.zip'
     url = os.path.join(data_server, fn)
     if len(os.listdir('dataset/COCO2017/val2017')) >= 5000:
-        logging.info(f'{fn} realdy downloaded')
+        logging.info(f'{fn} already downloaded')
     else:
         logging.info(f'Downloading {fn}')
         cmd = f'curl -o val2017.zip -s {url}'
@@ -333,7 +425,7 @@ def get_coco2017_val():
 
     fn = 'annotations_trainval2017.zip'
     if len(os.listdir('dataset/COCO2017/annotations')) >= 7:
-        logging.info(f'{fn} realdy downloaded')
+        logging.info(f'{fn} already downloaded')
     else:
         url = os.path.join(data_server, fn)
         logging.info(f'Downloading {fn}')

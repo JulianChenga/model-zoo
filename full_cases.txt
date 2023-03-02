@@ -1,6 +1,7 @@
 vision/OCR/PP-OCRv3det
 vision/OCR/PP-OCRv3cls
 vision/OCR/CRNN
+vision/OCR/OCRv3_paddle
 vision/video-recognition/C3D
 vision/pose-estimation/openpose
 vision/classification/MobileNet-Caffe-v2
@@ -30,6 +31,7 @@ vision/classification/mobilenet-v2
 vision/classification/InceptionBN-21k-for-Caffe
 vision/classification/ResNeXt
 vision/classification/SqueezeNet_v1.1
+vision/classification/ResNet50_vd_paddle
 vision/super-resolution/SRCNN
 vision/super-resolution/VDSR
 vision/detection/ultralytics-yolov3
@@ -39,6 +41,7 @@ vision/detection/py-R-FCN
 vision/detection/yolov3_tiny
 vision/detection/ppyolo
 vision/detection/ppyoloe
+vision/detection/scrfd
 vision/segmentation/paddle_humansegv1_lite
 vision/classification/shufflenet_v2
 vision/classification/inception_resnet_v2
@@ -52,9 +55,10 @@ vision/classification/mm_resnet50
 vision/classification/efficientnetv2
 vision/segmentation/unet_plusplus
 vision/recognition/facenet
-vision/segmentation/pp_liteseg
 vision/segmentation/deeplabv3p
 vision/segmentation/mobileseg
+vision/segmentation/pp_liteseg
+vision/segmentation/ERFNet-Caffe
 vision/GAN/cyclegan
 vision/detection/retinaface
 language/nlp/bert
@@ -66,7 +70,8 @@ vision/classification/ECANet-Torch
 vision/classification/ResNeXt50
 vision/classification/ResNet34
 vision/classification/MobileNet-Caffe-v3
-vision/RNN/GRU
+vision/classification/vgg19
+language/nlp/GRU
 vision/tracking/GOTURN-Caffe
 vision/tracking/MDNet-Torch
 vision/tracking/SiamMask-Torch
@@ -77,3 +82,17 @@ vision/detection/ssd-mobilenet
 vision/detection/ppyolov3
 vision/detection/pp-picodet
 language/nlp/mobilebert_tflite
+vision/classification/EfficientNet-B0
+vision/classification/EfficientNet-B1
+vision/classification/EfficientNet-B4
+vision/classification/EfficientNet-B5
+vision/classification/EfficientNet-B7
+vision/classification/HRNet-Torch
+vision/detection/vggssd_300
+vision/detection/CenterNet-Torch
+vision/detection/yolov3-torch
+vision/detection/yolov3_320
+vision/detection/yolov3_spp
+vision/detection/yolov3_608
+language/translate/opus-mt-zh-en
+vision/segmentation/mobileseg-mlir
