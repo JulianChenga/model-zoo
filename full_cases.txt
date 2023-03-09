@@ -8,6 +8,11 @@ vision/classification/MobileNet-Caffe-v2
 vision/classification/DenseNet-Caffe
 vision/classification/ResNet50-Caffe
 vision/classification/squeezenet1.0
+vision/classification/res2net50
+vision/classification/res2net101
+vision/classification/resnet18-v1
+vision/classification/resnet34-v1
+vision/classification/resnet50-v1
 vision/classification/resnet50-v2
 vision/classification/xception
 vision/classification/inception_v4
