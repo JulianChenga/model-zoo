@@ -8,7 +8,7 @@ model: $(home)/resnet101-v1-7.onnx
 time: true
 precision: false
 
-fp_batch_sizes: [1, 2, 4]
+fp_batch_sizes: [1]
 
 fp_compile_options:
   python3 -m bmneto
@@ -32,7 +32,7 @@ time_only_cali:
 
 int8_model: $(workdir)/$(name)_bmneto_deploy_int8_unique_top.prototxt
 int8_weight: $(workdir)/$(name)_bmneto.int8umodel
-bmnetu_batch_sizes: [1, 2, 4]
+bmnetu_batch_sizes: [1]
 bmnetu_options:
   --opt=2
   --cmp=True

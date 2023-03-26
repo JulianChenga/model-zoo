@@ -1,9 +1,10 @@
 ---
 
-name: resnet34-v1-7
-gops: 7.345687528
+name: squeezenet_v1.1
+gops: 7.816192340
 
-model: $(home)/resnet34-v1-7.onnx
+model: $(home)/deploy.prototxt
+weight: $(home)/squeezenet_v1.1.caffemodel
 
 time: true
 precision: false
@@ -11,17 +12,19 @@ precision: false
 fp_batch_sizes: [1]
 
 fp_compile_options:
-  python3 -m bmneto
+  bmnetc
   --model $(model)
+  --weight $(weight)
   --shapes [1,3,224,224]
   --target $(target)
-  --enable_profile True
+  --enable_profile true
   --opt 1
   --cmp 1
 
 time_only_cali:
   python3 -m ufw.cali.cali_model
     --model $(model)
+    --weights $(weight)
     --test_iterations 1
     --net_name $(name)
     --postprocess_and_calc_score_class none
@@ -30,8 +33,8 @@ time_only_cali:
     --cali_iterations 1
     --input_shapes=[1,3,224,224]
 
-int8_model: $(workdir)/$(name)_bmneto_deploy_int8_unique_top.prototxt
-int8_weight: $(workdir)/$(name)_bmneto.int8umodel
+int8_model: $(workdir)/$(name)_bmnetc_deploy_int8_unique_top.prototxt
+int8_weight: $(workdir)/$(name)_bmnetc.int8umodel
 bmnetu_batch_sizes: [1]
 bmnetu_options:
   --opt=2

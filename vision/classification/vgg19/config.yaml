@@ -7,7 +7,7 @@ time: true
 
 model: $(home)/vgg19.onnx
 input_shapes: "[1,3,224,224]"
-batch_sizes: [1, 4, 8, 16]
+batch_sizes: [1]
 
 int8_model: $(workdir)/$(name)_bmneto_deploy_int8_unique_top.prototxt
 int8_weight: $(workdir)/$(name)_bmneto.int8umodel
