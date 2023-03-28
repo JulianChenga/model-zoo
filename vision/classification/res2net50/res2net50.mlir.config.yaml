@@ -14,8 +14,8 @@ mlir_transform:
     --model_def $(home)/res2net50_26w_4s.onnx
     --input_shapes [[1, 3, 224, 224]]
     --resize_dims 256,256
-    --mean=123.67,116.28,103.53
-    --scale=0.017,0.017,0.017
+    --mean 123.67,116.28,103.53
+    --scale 0.017,0.017,0.017
     --test_input $(root)/dataset/samples/cat.jpg
     --test_result $(name)_top_outputs.npz
     --pixel_format rgb
@@ -63,8 +63,8 @@ BM1684X:
     mean: [123.67, 116.2, 103.53]
     scale: [0.017, 0.017, 0.017]
     size: 224
-    trans: true
-    bgr2rgb: true
+    trans: True
+    bgr2rgb: True
 
   harness:
     type: efficientnetv2

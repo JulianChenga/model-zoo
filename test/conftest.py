@@ -312,6 +312,8 @@ from functools import reduce
 def case_list():
     if 'TEST_CASES' in os.environ:
         return os.environ['TEST_CASES'].strip() or '--full'
+    if os.environ.get('TEST_CASES'):
+        return os.environ['TEST_CASES']
 
     if os.environ.get('FULL_TEST'):
         return '--full'

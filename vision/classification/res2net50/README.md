@@ -4,6 +4,7 @@
 
 ## Description
 
+<<<<<<< HEAD
 The Res2Net represents multi-scale features at a granular
 level and increases the range of receptive fields for each
 network layer. The proposed Res2Net block can be plugged
@@ -11,6 +12,9 @@ into the state-of-the-art backbone CNN models, e.g., ResNet,
 ResNeXt, and DLA. We evaluate the Res2Net block on all these
 models and demonstrate consistent performance gains over
 baseline models on widely-used datasets.
+=======
+The Res2Net represents multi-scale features at a granular level and increases the range of receptive fields for each network layer. The proposed Res2Net block can be plugged into the state-of-the-art backbone CNN models, e.g., ResNet, ResNeXt, and DLA. We evaluate the Res2Net block on all these models and demonstrate consistent performance gains over baseline models on widely-used datasets.
+>>>>>>> tmp
 
 ## Model
 
@@ -31,7 +35,11 @@ Res2net50
 
 ## License
 
+<<<<<<< HEAD
 The code is released under the Creative Commons
 Attribution-NonCommercial-ShareAlike 4.0 International
 Public License for Noncommercial use only. Any commercial
 use should get formal permission first.
+=======
+The code is released under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License for Noncommercial use only. Any commercial use should get formal permission first.
+>>>>>>> tmp
