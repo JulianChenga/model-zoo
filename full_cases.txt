@@ -13,6 +13,7 @@ vision/classification/resnet50-v2
 vision/classification/xception
 vision/classification/inception_v4
 vision/classification/vgg16
+vision/classification/vgg16-torch
 vision/classification/SqueezeNet
 vision/classification/inception_v3
 vision/classification/resnet18-v2
@@ -73,6 +74,7 @@ vision/classification/ResNeXt50
 vision/classification/ResNet34
 vision/classification/MobileNet-Caffe-v3
 vision/classification/vgg19
+vision/classification/vgg19-torch
 language/nlp/GRU
 vision/tracking/GOTURN-Caffe
 vision/tracking/MDNet-Torch

@@ -143,7 +143,9 @@ python3 .github/workflows/check.py
 |VDSR                             |[vision/super-resolution/VDSR](vision/super-resolution/VDSR)                                          |:white\_check\_mark:|                    |
 |vgg11                            |[vision/classification/vgg11-torch](vision/classification/vgg11-torch)                                |:white\_check\_mark:|                    |
 |vgg16                            |[vision/classification/vgg16](vision/classification/vgg16)                                            |                    |:white\_check\_mark:|
+|vgg16-torch                      |[vision/classification/vgg16-torch](vision/classification/vgg16-torch)                                |                    |:white\_check\_mark |
 |vgg19                            |[vision/classification/vgg19](vision/classification/vgg19)                                            |:white\_check\_mark:|                    |
+|vgg19-torch                      |[vision/classification/vgg19-torch](vision/classification/vgg19-torch)                                |                    |:white\_check\_mark |
 |vggssd\_300                      |[vision/detection/vggssd\_300](vision/detection/vggssd_300)                                           |:white\_check\_mark:|                    |
 |vision\_OCR\_CRNN\_tpu-mlir      |[vision/OCR/CRNN](vision/OCR/CRNN)                                                                    |                    |:white\_check\_mark:|
 |WRN-50-2                         |[vision/classification/WRN-50-2](vision/classification/WRN-50-2)                                      |:white\_check\_mark:|:white\_check\_mark:|
