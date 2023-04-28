@@ -136,6 +136,7 @@ python3 .github/workflows/check.py
 |shufflenet\_v2                   |[vision/classification/shufflenet\_v2](vision/classification/shufflenet_v2)                           |                    |:white\_check\_mark:|
 |shufflenetv2                     |[vision/classification/shufflenet\_v2\_torch](vision/classification/shufflenet_v2_torch)              |:white\_check\_mark:|                    |
 |SiamMask                         |[vision/tracking/SiamMask-Torch](vision/tracking/SiamMask-Torch)                                      |:white\_check\_mark:|:white\_check\_mark:|
+|solov2_r50_1x                    |[vision/segmentation/solov2_r50_1x](vision/segmentation/solov2_r50_1x)                                |                    |:white\_check\_mark:|
 |squeezenet                       |[vision/classification/SqueezeNet](vision/classification/SqueezeNet)                                  |:white\_check\_mark:|                    |
 |squeezenet1.0                    |[vision/classification/squeezenet1.0](vision/classification/squeezenet1.0)                            |                    |:white\_check\_mark:|
 |SRCNN                            |[vision/super-resolution/SRCNN](vision/super-resolution/SRCNN)                                        |:white\_check\_mark:|                    |

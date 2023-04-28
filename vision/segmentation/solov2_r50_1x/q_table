@@ -1,0 +1,7 @@
+# genetated time: 2023-04-27 18:10:09.064463
+# sample number: 1
+# chip: bm1684x  mix_mode: F16
+# number of F16 layer: 1
+###
+# op_name   quantize_mode
+cate_pred1_Sigmoid F16

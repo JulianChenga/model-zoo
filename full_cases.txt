@@ -62,6 +62,7 @@ vision/segmentation/deeplabv3p
 vision/segmentation/mobileseg
 vision/segmentation/pp_liteseg
 vision/segmentation/ERFNet-Caffe
+vision/segmentation/solov2_r50_1x
 vision/GAN/cyclegan
 vision/detection/retinaface
 language/nlp/bert
