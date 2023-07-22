@@ -1,0 +1,56 @@
+---
+
+name: adaface
+gops: [48.366806018]
+
+shapes:
+  - [2, 3, 112, 112]
+
+precision: true
+
+mlir_transform:
+  model_transform.py
+    --model_name $(name)
+    --model_def /$(home)/adaFace_ir101.onnx
+    --input_shapes [$(shape_param)]
+    --mean 123.93,116.28,103.53
+    --scale 0.01712475383,0.0175070028,0.01742919389
+    --keep_aspect_ratio
+    --pixel_format rgb
+    --test_input $(root)/dataset/samples/cat.jpg
+    --test_result $(name)_top_outputs.npz
+    --mlir $(workdir)/transformed.mlir
+    
+mlir_calibration:
+  run_calibration.py $(workdir)/transformed.mlir
+    --dataset $(imagenet2012_mlir_cali_set)
+    --input_num 100
+    -o $(workdir)/cali_table
+   
+#   run_qtable.py $(workdir)/transformed.mlir
+#     --dataset $(imagenet2012_mlir_cali_set)
+#     --calibration_table $(workdir)/cali_table
+#     --chip bm1684x 
+#     --min_layer_cos 0.999
+#     --expected_cos 0.9999
+#     -o q_table
+
+BM1684X:        
+  deploy:
+    - model_deploy.py 
+        --mlir $(workdir)/transformed.mlir
+        --quantize F32
+        --chip $(target)
+        --test_input $(workdir)/$(name)_in_f32.npz
+        --test_reference $(name)_top_outputs.npz
+        --tolerance 0.99,0.99
+        --mode $(workdir)/$(name)_$(target)_f32.bmodel    
+    - model_deploy.py
+        --mlir $(workdir)/transformed.mlir
+        --quantize BF16
+        --chip $(target)
+        --test_input $(workdir)/$(name)_in_f32.npz
+        --test_reference $(name)_top_outputs.npz
+        --tolerance 0.95,0.85
+        --model $(workdir)/$(name)_$(target)_bf16.bmodel
+ 
